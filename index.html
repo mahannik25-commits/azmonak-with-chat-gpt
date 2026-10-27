@@ -1,221 +1,356 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>آزمونک | سایت آزمون درس‌ها</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<title>آزمون‌پلاس</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; font-family: Tahoma, "Segoe UI", sans-serif; }
-  body { min-height:100vh; background:linear-gradient(135deg,#1e3c72,#2a5298,#6a3093); display:flex; align-items:center; justify-content:center; padding:20px; }
-  .card { background:#fff; width:100%; max-width:640px; border-radius:20px; padding:30px; box-shadow:0 20px 60px rgba(0,0,0,.35); }
-  h1 { text-align:center; color:#1e3c72; margin-bottom:8px; }
-  .sub { text-align:center; color:#777; margin-bottom:24px; font-size:14px; }
-  .subjects { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
-  .subject-btn { padding:18px 10px; border:none; border-radius:14px; font-size:17px; font-weight:bold; color:#fff; cursor:pointer; transition:.15s; }
-  .subject-btn:hover { transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,.2); }
-  .quran{background:linear-gradient(135deg,#11998e,#38ef7d)} .arabic{background:linear-gradient(135deg,#667eea,#764ba2)}
-  .math{background:linear-gradient(135deg,#f7971e,#ffd200)} .science{background:linear-gradient(135deg,#56ab2f,#a8e063)}
-  .farsi{background:linear-gradient(135deg,#ee0979,#ff6a00)} .social{background:linear-gradient(135deg,#2193b0,#6dd5ed)}
-  .english{background:linear-gradient(135deg,#c31432,#240b36)}
-  .progress { height:10px; background:#eee; border-radius:5px; overflow:hidden; margin-bottom:16px; }
-  .progress-bar { height:100%; background:linear-gradient(90deg,#38ef7d,#11998e); width:0; transition:.3s; }
-  .q-text { font-size:18px; font-weight:bold; color:#333; margin-bottom:20px; line-height:1.8; }
-  .opt { display:block; width:100%; text-align:right; padding:14px 18px; margin-bottom:10px; border:2px solid #e0e0e0; border-radius:12px; background:#fafafa; cursor:pointer; font-size:16px; transition:.15s; }
-  .opt:hover { border-color:#2a5298; background:#f0f4ff; }
-  .opt.correct { border-color:#2ecc71; background:#eaffea; }
-  .opt.wrong { border-color:#e74c3c; background:#ffeaea; }
-  .hidden { display:none; }
-  .nav { display:flex; justify-content:space-between; margin-top:16px; }
-  .btn { padding:12px 26px; border:none; border-radius:10px; font-size:16px; font-weight:bold; cursor:pointer; }
-  .btn-primary { background:linear-gradient(135deg,#1e3c72,#2a5298); color:#fff; }
-  .btn-gray { background:#eee; color:#555; }
-  .result-circle { width:170px; height:170px; border-radius:50%; margin:20px auto; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; font-weight:bold; }
-  .score { font-size:44px; } .outof { font-size:15px; opacity:.85; }
-  .msg { text-align:center; font-size:18px; font-weight:bold; margin-bottom:6px; }
-  .detail { text-align:center; color:#777; font-size:14px; margin-bottom:20px; }
-  .center { text-align:center; }
+:root{--bg:#0b1020;--panel:#151d31;--panel2:#1b2640;--text:#f3f6ff;--muted:#aab5cc;--accent:#7c83ff;--green:#38d9c5;--border:#2b3856}
+*{box-sizing:border-box}
+body{margin:0;padding:18px;background:radial-gradient(ellipse at top,#1a2550,var(--bg) 65%);color:var(--text);font-family:Tahoma,Arial,sans-serif;min-height:100vh}
+.container{max-width:900px;margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0 20px}
+.logo{font-size:26px;font-weight:bold}.logo span{color:var(--green)}
+.pill{font-size:12px;color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:9px 12px}
+.card{background:rgba(21,29,49,.96);border:1px solid var(--border);border-radius:18px;padding:22px;margin:14px 0;box-shadow:0 10px 30px #0002}
+h1{font-size:clamp(23px,4vw,32px);margin-top:0}
+.muted{color:var(--muted);line-height:1.9}
+.categories{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px;margin:20px 0}
+button{font:inherit;cursor:pointer;border-radius:12px;padding:13px}
+.category,.answer,.secondary{background:var(--panel2);color:var(--text);border:1px solid #34415f}
+.category{min-height:76px;text-align:center;line-height:1.8}
+.category:hover,.answer:hover:not(:disabled){border-color:var(--accent)}
+.primary{background:linear-gradient(120deg,var(--accent),#9d75ff);color:white;border:0;font-weight:bold}
+.secondary{padding:11px 16px}
+.hidden{display:none!important}
+.quiz-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:13px}
+.progress{height:7px;background:#29334c;border-radius:10px;overflow:hidden;margin:17px 0 22px}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--accent));transition:width .2s}
+.question{font-size:clamp(18px,3vw,23px);line-height:1.9;margin:15px 0 20px;overflow-wrap:anywhere}
+.answers{display:grid;gap:10px}
+.answer{text-align:right;line-height:1.8;overflow-wrap:anywhere}
+.answer.correct{background:#123a39;border-color:#38d9a7}
+.answer.wrong{background:#40242e;border-color:#ff7373}
+.feedback{margin-top:15px;padding:12px;border-radius:12px;line-height:1.9}
+.good{background:#123a39;color:#a7ffdf}
+.bad{background:#40242e;color:#ffd0d0}
+.actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:18px}
+.score{text-align:center;font-size:42px;color:var(--green);font-weight:bold;margin:18px}
+.review-item{border-top:1px solid var(--border);padding:13px 0;line-height:1.9;overflow-wrap:anywhere}
+.note{font-size:12px;color:var(--muted);line-height:1.9}
+footer{text-align:center;color:#8190ae;font-size:12px;margin:24px 0}
 </style>
 </head>
 <body>
-<div class="card">
-  <div id="home">
-    <h1>📚 آزمونک</h1>
-    <p class="sub">درس موردنظرت رو انتخاب کن، ۱۰ سوال چهارگزینه‌ای جواب بده و نمره از ۲۰ بگیر!</p>
-    <div class="subjects" id="subjectList"></div>
-  </div>
+<div class="container">
+<header>
+<div class="logo">آزمون<span>‌پلاس</span></div>
+<div class="pill">آزمون‌های متنوع • نتیجه فوری</div>
+</header>
 
-  <div id="quiz" class="hidden">
-    <div class="progress"><div class="progress-bar" id="bar"></div></div>
-    <p class="sub" id="counter"></p>
-    <div class="q-text" id="qText"></div>
-    <div id="options"></div>
-    <div class="nav">
-      <button class="btn btn-gray" id="quitBtn">خروج</button>
-      <button class="btn btn-primary hidden" id="nextBtn">بعدی ←</button>
-    </div>
-  </div>
+<section id="home" class="card">
+<h1>دانشت رو به چالش بکش! 🎯</h1>
+<p class="muted">موضوع موردنظرت رو انتخاب کن. سؤال‌ها و گزینه‌ها تصادفی می‌شن و سایت تلاش می‌کنه سؤال‌های تکراری رو در آزمون‌های بعدی کمتر کنه.</p>
+<div id="categories" class="categories"></div>
+<p class="note">بخش دانستنی‌ها تلاش می‌کند سؤال‌های تازه را از یک سرویس عمومی آنلاین دریافت کند. اگر سرویس در دسترس نباشد، از سؤال‌های داخلی استفاده می‌شود.</p>
+</section>
 
-  <div id="result" class="hidden">
-    <p class="msg" id="resMsg"></p>
-    <div class="result-circle" id="circle"><span class="score" id="score"></span><span class="outof">از ۲۰</span></div>
-    <p class="detail" id="detail"></p>
-    <div class="center">
-      <button class="btn btn-primary" id="againBtn">🔄 آزمون دوباره</button>
-    </div>
-  </div>
+<section id="quiz" class="card hidden">
+<div class="quiz-head"><span id="categoryName"></span><span id="counter"></span></div>
+<div class="progress"><div id="bar" class="bar"></div></div>
+<div id="question" class="question"></div>
+<div id="answers" class="answers"></div>
+<div id="feedback" class="feedback hidden"></div>
+<div class="actions">
+<button id="quit" class="secondary">بازگشت</button>
+<button id="next" class="primary" disabled>سؤال بعدی ←</button>
+</div>
+</section>
+
+<section id="result" class="card hidden">
+<h1 id="resultTitle">نتیجه آزمون</h1>
+<div id="score" class="score"></div>
+<p id="resultText" class="muted"></p>
+<div class="actions">
+<button id="again" class="primary">آزمون دوباره</button>
+<button id="homeBtn" class="secondary">انتخاب موضوع</button>
+</div>
+<div id="review"></div>
+</section>
+<footer>آزمون‌پلاس • نسخه آزمایشی</footer>
 </div>
 
 <script>
-const DATA = {
-'قرآن':{c:'quran',q:[
- ['سوره حمد چند آیه دارد؟',['۵','۶','۷','۸'],2],
- ['«إِنَّا أَعْطَيْنَاکَ الْکَوْثَر» در کدام سوره آمده است؟',['کوثر','فاتحه','نصر','فلق'],0],
- ['مفهوم «کوثر» یعنی چه؟',['خیر و برکت فراوان','آبشار','نور','رحمت'],0],
- ['اولین سوره‌ای که نازل شد کدام بود؟',['فاتحه','علق','ناس','مدثر'],1],
- ['«أَلَمْ نَشْرَحْ لَکَ صَدْرَکَ» خطاب به چه کسی است؟',['موسی','عیسى','پیامبر اسلام','آدم'],2],
- ['آیه «إِنَّ مَعَ الْعُسْرِ یُسْرًا» یعنی چه؟',['با هر سختی آسانی است','صبر زیباست','علم نور است','تلاش لازم است'],0],
- ['سوره توحید درباره چه است؟',['توحید و یگانگی خدا','قصه پیامبران','معراج','قیامت'],0],
- ['سوره‌ای که در آن کلمه «الله» ذکر نشده کدام است؟',['کهف','مريم','توبه','یوسف'],2],
- ['«وَالضُّحٰی * وَاللَّیْلِ إِذا سَکٰی» مقدمه کدام سوره است؟',['شمس','ضحی','لیل','بین'],1],
- ['سوره فاتحه نام‌های دیگری هم دارد؛ کدام از آنها نیست؟',['سبع‌المثانی','ام‌الکتاب','شافیه','کافیه'],2]
-]},
-'عربی':{c:'arabic',q:[
- ['«الْعِلْمُ نورٌ» چه نوع جمله‌ای است؟',['اسمیه','فعلیه','شرطیه','نهی'],0],
- ['ترجمه «یَجْلِسُ» چیست؟',['می‌نشیند','نشست','بنشین','نمی‌نشیند'],0],
- ['جمع «کِتاب» کدام است؟',['کُتّاب','کِتابان','مکتوب','کاتب'],0],
- ['«هذا طالبٌ مجتهدٌ» — «مجتهد» چه نقشی دارد؟',['فاعل','صفة','مفعول','مبتدا'],1],
- ['معنای «البَیْت» چیست؟',['خانه','مدرسه','کتاب','مسجد'],0],
- ['فعل ماضی «ذَهَبَ» یعنی چه؟',['رفت','می‌رود','برو','رفتن'],0],
- ['جمع مکسر «قَلَم» کدام است؟',['أقلام','قلمون','قلمات','قالم'],0],
- ['معنای «اِفْتَتَحَ» چیست؟',['شروع کرد','باز کرد','بست','ساخت'],0],
- ['«یَومِ الجُمْعَة» یعنی چه؟',['روز جمعه','روز شنبه','آخر هفته','تعطیلات'],0],
- ['مقابل «الصَّغیر» کدام است؟',['الکبیر','الجمیل','الطویل','الضعیف'],0]
-]},
-'ریاضی':{c:'math',q:[
- ['حاصل ۱۵٪ از ۲۰۰ چند است؟',['۳۰','۲۵','۳۵','۴۰'],0],
- ['اگر x + 7 = 12 باشد، x چند است؟',['۴','۵','۶','۷'],1],
- ['مساحت مربعی با ضلع ۶ چند است؟',['۳۶','۲۴','۱۲','۴۸'],0],
- ['عدد اول کدام است؟',['۹','۱۵','۱۷','۲۱'],2],
- ['حاصل ۲³ × ۲² چند است؟',['۲⁵','۲⁶','۴⁵','۸'],0],
- ['میانگین اعداد ۴، ۸، ۱۲، ۱۶ چند است؟',['۸','۹','۱۰','۱۲'],2],
- ['زاویه‌های مثلث مجموعاً چند درجه‌اند؟',['۹۰','۱۸۰','۲۷۰','۳۶۰'],1],
- ['کسر معادل ۳/۴ کدام است؟',['۶/۸','۴/۶','۳/۶','۵/۸'],0],
- ['اگر کالایی ۵۰۰۰۰ تومانی با ۲۰٪ تخفیف بخریم چند می‌پردازیم؟',['۴۰۰۰۰','۴۲۰۰۰','۴۵۰۰۰','۳۸۰۰۰'],0],
- ['حاصل (−۳) × (−۴) چند است؟',['−۱۲','۱۲','۷','۱'],1]
-]},
-'علوم':{c:'science',q:[
- ['بزرگ‌ترین سیاره منظومه شمسی کدام است؟',['زحل','مشتری','نپتون','زمین'],1],
- ['آب در چند درجه سلسیوس می‌جوشد (سطح دریا)؟',['۹۰','۹۵','۱۰۰','۱۱۰'],2],
- ['کدام اندام خون را تصفیه می‌کند؟',['کبد','کلیه','قلب','معده'],1],
- ['فرآیند جذب نور توسط برگ گیاهان چه نام دارد؟',['نفس‌کشی','فتوسنتز','تعرق','جذب'],1],
- ['سرعت نور تقریباً چند کیلومتر بر ثانیه است؟',['۳۰۰ هزار','۳ میلیون','۳۰ هزار','۳ میلیارد'],0],
- ['بزرگ‌ترین اندام بدن انسان چیست؟',['کبد','مغز','پوست','ریه'],2],
- ['اتم از چه تشکیل شده است؟',['پروتون، نوترون و الکترون','فقط پروتون','فقط الکترون','مولکول'],0],
- ['کدام گاز بیشترین مقدار در جو زمین را دارد؟',['اکسیژن','نیتروژن','کربن‌دی‌اکسید','هیدروژن'],1],
- ['نظریه نسبیت را چه کسی مطرح کرد؟',['نیوتن','انیشتین','ادیسون','گالیله'],1],
- ['گردش زمین به دور خورشید چند روز طول می‌کشد؟',['۳۶۵ روز','۲۴ ساعت','۳۰ روز','۱۸۰ روز'],0]
-]},
-'فارسی':{c:'farsi',q:[
- ['شاهنامه اثر چه کسی است؟',['سعدی','فردوسی','حافظ','مولوی'],1],
- ['مثنوی معنوی از چه کسی است؟',['مولوی','حافظ','سعدی','نظامی'],0],
- ['«گلستان» نوشته کیست؟',['فردوسی','سعدی','خیام','جامی'],1],
- ['قالب‌های اصلی شعر فارسی کدام است؟',['قصیده، غزل، مثنوی، قطعه','رمان، نمایشنامه','نثر، نظم','هیچ‌کدام'],0],
- ['«هر که بامش بیش برفش بیشتر» چه نوع جمله است؟',['ضرب‌المثل','داستان','شعر','مقاله'],0],
- ['مفهوم واژه «کریم» چیست؟',['بخشنده','سخاوتمند','دروغگو','ترسو'],0],
- ['نویسنده «بوف کور» کیست؟',['صادق هدایت','جلال آل‌احمد','محمدعلی جمالزاده','بزرگ علوی'],0],
- ['حافظ بیشتر در چه قالبی شعر سروده؟',['غزل','مثنوی','قصیده','دو بیتی'],0],
- ['سبک هندی بیشتر درباره چه است؟',['شعر و معشوق','علم','تاریخ','فلسفه'],0],
- ['نثر آهنگین یعنی چه؟',['نثری که آهنگ و لحن موزون دارد','شعر','داستان کوتاه','مقاله'],0]
-]},
-'مطالعات':{c:'social',q:[
- ['پایتخت ایران کدام شهر است؟',['اصفهان','تهران','شیراز','مشهد'],1],
- ['طولانی‌ترین رود ایران کدام است؟',['کارون','سفیدرود','دجله','زاینده‌رود'],0],
- ['ایران در چه قاره‌ای قرار دارد؟',['آسیا','اروپا','آفریقا','امریکا'],0],
- ['کوه دماوند در کدام استان است؟',['مازندران','تهران','گیلان','یزد'],0],
- ['مرداد چندمین ماه سال شمسی است؟',['پنجم','ششم','هفتم','چهارم'],0],
- ['پرجمعیت‌ترین کشور جهان کدام است؟',['هند','چین','امریکا','اندونزی'],0],
- ['دریای شمال ایران چه نام دارد؟',['دریای خزر','دریای عمان','خلیج فارس','دریای مرمره'],0],
- ['منبع تجدیدناپذیر انرژی کدام است؟',['نفت','خورشید','باد','آب'],0],
- ['نیمکره شمالی زمین بیشتر خشکی‌ها را دارد؛ درست است؟',['درست','غلط','',''],0],
- ['شورای شهر چه وظیفه‌ای دارد؟',['مدیریت شهر','قانون‌گذاری کشور','امور نظامی','قضاوت'],0]
-]},
-'انگلیسی':{c:'english',q:[
- ['She ___ to school every day.',['go','goes','going','gone'],1],
- ['Past tense of "write" is:',['wrote','writed','written','writing'],0],
- ['Plural of "book" is:',['bookes','books','bookies','book'],1],
- ['I ___ a student.',['am','is','are','be'],0],
- ['Opposite of "big" is:',['small','tall','long','fast'],0],
- ['He ___ football yesterday.',['played','play','plays','playing'],0],
- ['"Where ___ you from?"',['are','is','am','do'],0],
- ['Comparative of "good" is:',['gooder','better','best','more good'],1],
- ['"school" means:',['مدرسه','خانه','کتاب','دوست'],0],
- ['She ___ TV now.',['is watching','watch','watches','watched'],0]
-]}
+"use strict";
+
+const BANK = {
+"قرآن":[
+["اولین سوره قرآن کدام است؟",["حمد","بقره","ناس","علق"],0],
+["قرآن کریم چند جزء دارد؟",["۲۰","۳۰","۴۰","۱۱۴"],1],
+["آخرین سوره قرآن کدام است؟",["فلق","کوثر","ناس","اخلاص"],2],
+["قرآن به چه زبانی نازل شده است؟",["فارسی","عربی","عبری","لاتین"],1],
+["بلندترین سوره قرآن کدام است؟",["آل‌عمران","نساء","بقره","مائده"],2],
+["کدام سوره با «قل هو الله احد» آغاز می‌شود؟",["اخلاص","فلق","ناس","کوثر"],0],
+["تعداد سوره‌های قرآن چند تاست؟",["۱۰۰","۱۱۰","۱۱۴","۱۲۰"],2],
+["شب قدر در کدام ماه است؟",["محرم","رمضان","رجب","شعبان"],1],
+["کدام پیامبر با لقب کلیم‌الله شناخته می‌شود؟",["عیسی","موسی","ابراهیم","نوح"],1],
+["سوره حمد چند آیه دارد؟",["۵","۶","۷","۸"],2]
+],
+"عربی":[
+["معنی «کتاب» چیست؟",["دفتر","کتاب","مدرسه","قلم"],1],
+["جمع «طالب» چیست؟",["طالبات","طلاب","طالبتان","طلب"],1],
+["معنی «هذه» کدام است؟",["این (مؤنث)","آن (مذکر)","این دو","آن‌ها"],0],
+["متضاد «کبیر» چیست؟",["طویل","صغیر","جمیل","قریب"],1],
+["معنی «مدرسة» چیست؟",["بیمارستان","مدرسه","خانه","بازار"],1],
+["«نحن» به چه معناست؟",["من","تو","ما","آن‌ها"],2],
+["مفرد «طلاب» چیست؟",["طالب","طالبة","طلب","مطلب"],0],
+["معنی «جميل» چیست؟",["زیبا","سریع","دور","کوچک"],0],
+["«أنتَ» برای چه کسی به‌کار می‌رود؟",["من","تو (مذکر)","تو (مؤنث)","ما"],1],
+["معنی «باب» چیست؟",["پنجره","در","دیوار","سقف"],1]
+],
+"علوم":[
+["کدام سیاره به سیاره سرخ معروف است؟",["زهره","مریخ","مشتری","عطارد"],1],
+["گیاهان بیشتر انرژی خود را از کجا می‌گیرند؟",["خاک","ماه","خورشید","باد"],2],
+["فرمول شیمیایی آب چیست؟",["CO₂","O₂","H₂O","NaCl"],2],
+["کدام اندام خون را در بدن پمپ می‌کند؟",["ریه","مغز","قلب","کبد"],2],
+["آب در فشار معمولی در چند درجه می‌جوشد؟",["۵۰","۷۵","۱۰۰","۱۵۰"],2],
+["بزرگ‌ترین سیاره منظومه شمسی کدام است؟",["زمین","زحل","مشتری","نپتون"],2],
+["نیرویی که اجسام را به سوی زمین می‌کشد چیست؟",["اصطکاک","گرانش","مغناطیس","شناوری"],1],
+["کدام گاز برای تنفس انسان ضروری است؟",["اکسیژن","هلیم","نئون","هیدروژن"],0],
+["واحد اصلی اندازه‌گیری نیرو چیست؟",["ژول","وات","نیوتن","متر"],2],
+["کدام بخش گیاه آب را از خاک جذب می‌کند؟",["گلبرگ","ریشه","میوه","ساقه"],1]
+],
+"مطالعات اجتماعی":[
+["پایتخت ایران کدام شهر است؟",["اصفهان","شیراز","تهران","تبریز"],2],
+["بزرگ‌ترین اقیانوس جهان کدام است؟",["اطلس","هند","آرام","منجمد شمالی"],2],
+["نقشه معمولاً برای چه کاری استفاده می‌شود؟",["نمایش مکان‌ها","اندازه‌گیری دما","تولید برق","پخت غذا"],0],
+["خط استوا زمین را به کدام دو نیم‌کره تقسیم می‌کند؟",["شرقی و غربی","شمالی و جنوبی","خشکی و آب","سرد و گرم"],1],
+["کدام قاره از همه بزرگ‌تر است؟",["آفریقا","اروپا","آسیا","استرالیا"],2],
+["واحد پول رسمی ایران چیست؟",["ریال","دلار","لیر","یورو"],0],
+["کدام مورد منبع طبیعی به‌شمار می‌رود؟",["پلاستیک","نفت","شیشه","کاغذ"],1],
+["کدام جهت مقابل شمال است؟",["شرق","غرب","جنوب","شمال‌شرق"],2],
+["شهر مشهد در کدام کشور قرار دارد؟",["افغانستان","ایران","عراق","ترکیه"],1],
+["برای نشان دادن جهت‌ها روی نقشه از چه چیزی استفاده می‌شود؟",["جهت‌نما","خط‌کش","دماسنج","ترازو"],0]
+],
+"فارسی":[
+["کدام گزینه هم‌معنی «خوشحال» است؟",["اندوهگین","شاد","خسته","نگران"],1],
+["کدام گزینه اسم است؟",["دویدن","زیبا","دانش‌آموز","آرام"],2],
+["متضاد «آغاز» چیست؟",["شروع","پایان","ورود","حرکت"],1],
+["در جمله «پرنده پرواز کرد»، فعل کدام است؟",["پرنده","پرواز","کرد","پرواز کرد"],3],
+["کدام واژه درست نوشته شده است؟",["مسعول","مسئول","مسئولل","مسوولل"],1],
+["جمع «درخت» کدام است؟",["درختان","درختی","درختچه","درختک"],0],
+["کدام گزینه صفت است؟",["کتاب","زیبا","رفت","مدرسه"],1],
+["مترادف «دلیر» چیست؟",["ترسو","شجاع","ضعیف","آرام"],1],
+["کدام نشانه برای پایان پرسش می‌آید؟",["،","؛","؟","."],2],
+["در جمله «علی کتاب خواند»، فاعل کیست؟",["کتاب","خواند","علی","جمله"],2]
+],
+"ریاضی":[
+["حاصل ۷ × ۸ چند است؟",["۵۴","۵۶","۶۴","۴۸"],1],
+["حاصل ۴۵ + ۲۷ چند است؟",["۶۲","۷۲","۷۰","۶۸"],1],
+["نصف ۹۰ چند است؟",["۴۰","۴۵","۵۰","۵۵"],1],
+["محیط مربع با ضلع ۵ سانتی‌متر چقدر است؟",["۱۰","۱۵","۲۰","۲۵"],2],
+["کدام کسر با ۱/۲ برابر است؟",["۲/۳","۳/۶","۴/۶","۱/۳"],1],
+["حاصل ۱۰۰ − ۳۷ چند است؟",["۶۳","۶۷","۷۳","۵۳"],0],
+["عدد بعدی الگو چیست؟ ۳، ۶، ۹، ۱۲، ...",["۱۳","۱۴","۱۵","۱۸"],2],
+["یک ساعت چند دقیقه است؟",["۳۰","۴۵","۶۰","۹۰"],2],
+["حاصل ۹ × ۹ چند است؟",["۷۲","۸۱","۹۱","۷۹"],1],
+["اگر ۳ بسته، هرکدام ۴ مداد داشته باشند، چند مداد داریم؟",["۷","۱۲","۱۴","۱۶"],1]
+],
+"زبان انگلیسی":[
+["معنی واژه «Apple» چیست؟",["پرتقال","سیب","موز","انگور"],1],
+["کدام گزینه معنی «کتاب» می‌دهد؟",["Pen","Book","Door","Chair"],1],
+["جمع واژه «Child» چیست؟",["Childs","Childes","Children","Childrens"],2],
+["جای خالی را کامل کن: I ___ a student.",["am","is","are","be"],0],
+["متضاد «Hot» چیست؟",["Warm","Cold","Tall","Fast"],1],
+["معنی «Good morning» چیست؟",["شب بخیر","صبح بخیر","خداحافظ","متشکرم"],1],
+["گذشته فعل «Go» چیست؟",["Goed","Gone","Went","Going"],2],
+["کدام ضمیر به معنی «آن‌ها» است؟",["We","They","He","She"],1],
+["معنی «Beautiful» چیست؟",["زیبا","سریع","سنگین","گرسنه"],0],
+["جای خالی را کامل کن: She ___ happy.",["am","are","is","be"],2]
+],
+"کامپیوتر":[
+["CPU معمولاً چه نامیده می‌شود؟",["حافظه جانبی","پردازنده","نمایشگر","چاپگر"],1],
+["کدام وسیله برای وارد کردن متن است؟",["بلندگو","مانیتور","صفحه‌کلید","چاپگر"],2],
+["HTML بیشتر برای چه کاری استفاده می‌شود؟",["ساختار صفحات وب","ویرایش ویدئو","محاسبات سنگین","ساخت قطعات"],0],
+["کدام یک مرورگر وب است؟",["Chrome","Excel","Paint","Calculator"],0],
+["RAM چه نوع حافظه‌ای است؟",["موقت","فقط خواندنی","کاغذی","نوری"],0],
+["پسوند رایج فایل صفحه وب چیست؟",[".mp3",".html",".jpg",".exe"],1],
+["کدام مورد رمز عبور قوی‌تری می‌سازد؟",["123456","password","ترکیب طولانی حروف و عدد و نماد","نام خود"],2],
+["Wi-Fi برای چه کاری است؟",["اتصال بی‌سیم به شبکه","چاپ کاغذ","شارژ باتری","خنک کردن رایانه"],0],
+["کدام دستگاه خروجی تصویر می‌دهد؟",["ماوس","کیبورد","مانیتور","میکروفون"],2],
+["برای ذخیره دائمی فایل‌ها معمولاً از چه چیزی استفاده می‌شود؟",["RAM","SSD یا هارد","CPU","فن"],1]
+],
+"دانستنی‌ها":[
+["بزرگ‌ترین پستاندار جهان کدام است؟",["فیل آفریقایی","نهنگ آبی","زرافه","کوسه سفید"],1],
+["چند رنگ اصلی در مدل RGB وجود دارد؟",["۲","۳","۴","۵"],1],
+["کدام حیوان به تغییر رنگ معروف است؟",["آفتاب‌پرست","خرگوش","اسب","پنگوئن"],0],
+["کدام سیاره حلقه‌های برجسته دارد؟",["مریخ","زحل","زمین","عطارد"],1],
+["سازنده نقاشی مونالیزا چه کسی بود؟",["ونسان ون‌گوگ","پابلو پیکاسو","لئوناردو داوینچی","کلود مونه"],2],
+["کدام فلز در دمای اتاق مایع است؟",["آهن","جیوه","مس","آلومینیوم"],1],
+["سریع‌ترین جانور خشکی کدام است؟",["شیر","یوزپلنگ","اسب","گرگ"],1],
+["کدام کشور به شکل چکمه تشبیه می‌شود؟",["ایتالیا","ژاپن","مصر","کانادا"],0],
+["یک سال کبیسه معمولاً چند روز دارد؟",["۳۶۴","۳۶۵","۳۶۶","۳۶۷"],2],
+["کدام ساز دارای کلیدهای سیاه و سفید است؟",["ویولن","فلوت","پیانو","تار"],2]
+]
 };
 
-let subject=null, qIndex=0, score=0, selected=null, order=[];
+const $=id=>document.getElementById(id);
+const CATS=Object.keys(BANK);
+let currentCat="",questions=[],index=0,userAnswers=[],onlineUsed=false;
 
-const $ = id => document.getElementById(id);
-
-function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
-
-function showHome(){
-  ['quiz','result'].forEach(i=>$(i).classList.add('hidden'));
-  $('home').classList.remove('hidden');
-  const list=$('subjectList'); list.innerHTML='';
-  for(const [name,{c}] of Object.entries(DATA)){
-    const b=document.createElement('button');
-    b.className='subject-btn '+c; b.textContent=name;
-    b.onclick=()=>startQuiz(name);
-    list.appendChild(b);
-  }
+function shuffle(array){
+ const a=[...array];
+ for(let i=a.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));
+  [a[i],a[j]]=[a[j],a[i]];
+ }
+ return a;
 }
-
-function startQuiz(name){
-  subject=name; score=0; qIndex=0;
-  order=shuffle(DATA[name].q).slice(0,10);
-  $('home').classList.add('hidden');
-  $('result').classList.add('hidden');
-  $('quiz').classList.remove('hidden');
-  showQ();
+function escapeHtml(value){
+ return String(value).replace(/[&<>"']/g,ch=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[ch]));
 }
-
-function showQ(){
-  const [text,opts,ans]=order[qIndex];
-  $('bar').style.width=((qIndex)/order.length*100)+'%';
-  $('counter').textContent=subject+' — سوال '+(qIndex+1)+' از '+order.length;
-  $('qText').textContent=text;
-  const box=$('options'); box.innerHTML=''; selected=null;
-  $('nextBtn').classList.add('hidden');
-  shuffle(opts.map((o,i)=>({o,i}))).forEach(({o,i})=>{
-    const b=document.createElement('button');
-    b.className='opt'; b.textContent=o;
-    b.onclick=()=>{ if(selected!==null)return; selected=i;
-      [...box.children].forEach(x=>{ if(x.textContent===opts[ans]) x.classList.add('correct'); });
-      if(i!==ans) b.classList.add('wrong'); else score++;
-      $('nextBtn').classList.remove('hidden');
-    };
-    box.appendChild(b);
+function getSeen(cat){
+ try{return JSON.parse(localStorage.getItem("azmonplus_seen_"+cat)||"[]")}
+ catch(e){return []}
+}
+function setSeen(cat,items){
+ try{localStorage.setItem("azmonplus_seen_"+cat,JSON.stringify(items))}
+ catch(e){}
+}
+function makeInternalQuestions(cat){
+ const all=BANK[cat];
+ let seen=getSeen(cat);
+ let fresh=all.filter(q=>!seen.includes(q[0]));
+ if(fresh.length<5){fresh=all;seen=[]}
+ const selected=shuffle(fresh).slice(0,Math.min(10,fresh.length));
+ setSeen(cat,[...seen,...selected.map(q=>q[0])]);
+ return selected.map(q=>({
+  text:q[0],
+  options:shuffle(q[1].map((text,i)=>({text,correct:i===q[2]})))
+ }));
+}
+async function fetchOnlineQuestions(){
+ try{
+  const response=await fetch(
+   "https://opentdb.com/api.php?amount=10&type=multiple&encode=url3986",
+   {cache:"no-store"}
+  );
+  if(!response.ok)throw new Error("Network error");
+  const data=await response.json();
+  if(data.response_code!==0||!data.results?.length)throw new Error("No questions");
+  const decode=s=>decodeURIComponent(s.replace(/\+/g,"%20"));
+  return data.results.map(item=>{
+   const correct=decode(item.correct_answer);
+   const choices=[
+    ...item.incorrect_answers.map(decode),
+    correct
+   ].map(text=>({text,correct:text===correct}));
+   return {text:decode(item.question),options:shuffle(choices)};
   });
+ }catch(error){
+  return null;
+ }
 }
-
-$('nextBtn').onclick=()=>{ if(qIndex<order.length-1){ qIndex++; showQ(); } else showResult(); };
-$('quitBtn').onclick=showHome;
-$('againBtn').onclick=showHome;
-
+function renderCategories(){
+ const icons=["📖","🗣️","🧪","🌍","✍️","➗","🇬🇧","💻","🧠"];
+ CATS.forEach((cat,i)=>{
+  const button=document.createElement("button");
+  button.className="category";
+  button.innerHTML=`<strong>${icons[i]} ${cat}</strong><small>${BANK[cat].length} سؤال پایه</small>`;
+  button.addEventListener("click",()=>startQuiz(cat));
+  $("categories").appendChild(button);
+ });
+}
+async function startQuiz(cat){
+ currentCat=cat;index=0;userAnswers=[];onlineUsed=false;
+ $("home").classList.add("hidden");
+ $("result").classList.add("hidden");
+ $("quiz").classList.remove("hidden");
+ $("categoryName").textContent=cat;
+ $("question").textContent="در حال آماده‌سازی سؤال‌ها…";
+ $("answers").innerHTML="";
+ $("feedback").className="feedback hidden";
+ $("next").disabled=true;
+ if(cat==="دانستنی‌ها"){
+  const online=await fetchOnlineQuestions();
+  if(online){questions=online;onlineUsed=true}
+  else questions=makeInternalQuestions(cat);
+ }else{
+  questions=makeInternalQuestions(cat);
+ }
+ renderQuestion();
+}
+function renderQuestion(){
+ const q=questions[index];
+ $("counter").textContent=`سؤال ${index+1} از ${questions.length}`;
+ $("bar").style.width=`${index/questions.length*100}%`;
+ $("question").textContent=q.text;
+ $("answers").innerHTML="";
+ $("feedback").className="feedback hidden";
+ $("feedback").textContent="";
+ $("next").disabled=true;
+ $("next").textContent=index===questions.length-1?"دیدن نتیجه":"سؤال بعدی ←";
+ q.options.forEach((option,i)=>{
+  const button=document.createElement("button");
+  button.className="answer";
+  button.textContent=`${["الف","ب","ج","د"][i]||i+1}) ${option.text}`;
+  button.addEventListener("click",()=>selectAnswer(i));
+  $("answers").appendChild(button);
+ });
+}
+function selectAnswer(choice){
+ if(userAnswers[index]!==undefined)return;
+ userAnswers[index]=choice;
+ const q=questions[index];
+ const correct=q.options[choice].correct;
+ [...$("answers").children].forEach((button,i)=>{
+  button.disabled=true;
+  if(q.options[i].correct)button.classList.add("correct");
+  if(i===choice&&!correct)button.classList.add("wrong");
+ });
+ $("feedback").className="feedback "+(correct?"good":"bad");
+ $("feedback").textContent=correct
+  ?"آفرین! پاسخ درست است."
+  :"پاسخ درست: "+q.options.find(o=>o.correct).text;
+ $("next").disabled=false;
+}
 function showResult(){
-  $('quiz').classList.add('hidden');
-  $('result').classList.remove('hidden');
-  const n=Math.round(score*2*10)/10;
-  $('score').textContent=n;
-  const pct=score/order.length;
-  const col=pct>=0.8?'linear-gradient(135deg,#38ef7d,#11998e)':pct>=0.5?'linear-gradient(135deg,#f7971e,#ffd200)':'linear-gradient(135deg,#c31432,#240b36)';
-  $('circle').style.background=col;
-  $('resMsg').textContent = pct>=0.8?'آفرین! عالی بود':pct>=0.5?'خوب بود، بهتر هم می‌شی':'تلاشت رو کن، دوباره امتحان کن!';
-  $('detail').textContent='پاسخ درست: '+score+' از '+order.length+' سوال';
+ $("quiz").classList.add("hidden");
+ $("result").classList.remove("hidden");
+ const correctCount=questions.reduce((total,q,i)=>
+  total+(userAnswers[i]!==undefined&&q.options[userAnswers[i]]?.correct?1:0),0);
+ const score=Math.round(correctCount/Math.max(1,questions.length)*20);
+ $("score").textContent=`${score} از ۲۰`;
+ $("resultTitle").textContent=score>=16?"عالی بود! 🎉":score>=10?"خوب پیش رفتی!":"تمرین بیشتر نتیجه می‌دهد!";
+ $("resultText").textContent=
+  `از ${questions.length} سؤال، ${correctCount} پاسخ درست داشتی.`+
+  (onlineUsed?" سؤال‌های این آزمون از سرویس آنلاین دریافت شدند.":"");
+ $("review").innerHTML="<h3>مرور پاسخ‌ها</h3>"+
+  questions.map((q,i)=>`<div class="review-item">
+  <strong>${i+1}. ${escapeHtml(q.text)}</strong>
+  <div>پاسخ تو: ${userAnswers[i]===undefined?"بدون پاسخ":escapeHtml(q.options[userAnswers[i]].text)}</div>
+  <div style="color:#7ce8c8">پاسخ صحیح: ${escapeHtml(q.options.find(o=>o.correct)?.text||"")}</div>
+  </div>`).join("");
+ $("bar").style.width="100%";
 }
-
-showHome();
+function goHome(){
+ $("quiz").classList.add("hidden");
+ $("result").classList.add("hidden");
+ $("home").classList.remove("hidden");
+}
+$("next").addEventListener("click",()=>{
+ if(userAnswers[index]===undefined)return;
+ if(index<questions.length-1){index++;renderQuestion()}
+ else showResult();
+});
+$("quit").addEventListener("click",goHome);
+$("homeBtn").addEventListener("click",goHome);
+$("again").addEventListener("click",()=>startQuiz(currentCat));
+renderCategories();
 </script>
 </body>
 </html>
